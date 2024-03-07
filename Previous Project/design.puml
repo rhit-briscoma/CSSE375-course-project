@@ -1,0 +1,345 @@
+@@startuml Project Design
+
+
+package presentation{
++class main{
+    +{static} main(args: String[]): void
+}
+
+}
+
+package domain {
+
+    package checks{
+
+        +abstract Check{
+            +{abstract}performCheck(node ClassNode): String 
+            # print(string: String): void 
+        }
+        
+        package design_pattern_checks{
+
+            +class DecoratorPattern{
+                -result: String
+                +DecoratorPattern()
+                +performCheck(node: MyClassNode): String
+                -containsMethod(decoratorNode: MyClassNode, methodNode: MyMethodNode): boolean
+                +checkSameNNumPublic(superNode: MyClassNode, decoratorNode: MyClassNode): boolean
+                -performWork(): String
+            }
+
+            +class FacadePattern{
+                +FacadePattern()
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class StrategyPattern{
+                +StrategyPattern()
+                +performCheck(classNode: MyClassNode): String
+                -isInterfaceType(desc: String): boolean
+                -isDelegatingToStrategy(method: MyMethodNode): boolean
+            }
+
+            +class ObserverPattern{
+                +ObserverPattern()
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class CheckObserverPatternSubjectPart{
+                -hasAddOberverMethod: boolean
+                -hasRemoveObserverMethod: boolean
+                +CheckObersverPatternSubjectPart()
+                +visitMethod(access: int, name: String, descriptor: String, signature: String, exceptions: String[])
+            }
+
+            +class CheckObserverPatternObserverPart{
+                -hasUpdateMethod: boolean
+                -isObserverInterface: boolean
+                +CheckObserverPatternObserverPart()
+                +visit(version: int, access: int, name: String, signature: String, superName: String, interfaces: String[])
+            }
+
+            +abstract PatternCheck{
+                -node: MyClassNode
+            }
+
+            PatternCheck <|-d- DecoratorPattern
+            PatternCheck <|-d- FacadePattern
+            PatternCheck <|-d- StrategyPattern
+            PatternCheck <|-d- ObserverPattern
+        }
+
+        package design_principle_checks{
+
+            +class ProgramToInterface{
+
+            }
+
+            +class SingleResponsibilityPrinciple{
+                +SingleResponsibilityPrinciple()
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class InformationHiding{
+                -currentNode: MyClassNode
+                -publicFields: int
+                -privateFields: int
+                -protectedFields: int
+                -publicMethods: int
+                -privateMethods: int
+                -protectedMethods: int
+                +InformationHiding()
+                +performCheck(node: MyClassNode): String
+                -checkModifiers(): String
+                -checkAccessFlag(code: int, inputType: int): void
+                -finalCheck(numFields: int, numMethods: int, sb2: StringBuilder): void
+                -resetCounter(): void
+            }
+
+            +class CheckDuplicateCode{
+                +CheckDuplicateCode()
+                -CheckDuplicates(): boolean
+                -areAllInstructionsEqual(method1: MyMethodNode, method2: MyMethodNode): boolean
+                -isInitMethod(method: MyMethodName): boolean
+                +performCheck(node: MyClassNode): String
+            }
+
+            +abstract PrincipleCheck{
+                # nodes: List<MyClassNode>
+                # node: MyClassNode
+            }
+
+            PrincipleCheck <|-d- ProgramToInterface
+            PrincipleCheck <|-d- SingleResponsibilityPrinciple
+            PrincipleCheck <|-d- InformationHiding
+            PrincipleCheck <|-d- CheckDuplicateCode
+
+        }
+
+        package style_checks{
+
+            +class VariableNamingConventions{
+                +VariableNaminngConventions(classNode: MyClassNode)
+                -performWork(): String
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class UnusedVariableChecker{
+                +UnusedVariableChecker()
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class MethodStyleCheck{
+                -methodNames: ArrayList<String>
+                +MethodStyleCheck()
+                -populateMethodNames(): void
+                -confusingMethodNames(): String 
+                -isInitMethod(method: MyMethodNode): boolean
+                +performCheck(node: MyClassNode): String
+            }
+
+            +class CheckClassName{
+                +CheckClassName() 
+                -isPascalCase(name: String): boolean
+                -result(className: String): boolean
+                +performCheck(node: MyClassNode): String
+            }
+
+
+            +abstract StyleCheck{
+                # node: MyClassNode
+            }
+
+            StyleCheck <|-d- VariableNamingConventions
+            StyleCheck <|-d- UnusedVariableChecker
+            StyleCheck <|-d- MethodStyleCheck
+            StyleCheck <|-d- CheckClassName
+
+        }
+
+        Check -d-|> PrincipleCheck
+        Check -d-|> PatternCheck
+        Check -d-|> StyleCheck
+        
+    }
+
++class Analyzer{
+    -classFileReader: IClassFileReader
+    -checks: ArrayList<Check>
+    -projectDirectory: Path
+    -scanner: Scanner
+    -nodes: ArrayList<ClassNode>
+    +Analyzer(classFileReader: IClassFileReader, projectDirectory: Path, scanner: Scanner)
+    -populateCheckObjects(): void
+    +readFiles(projectDirectory: Path): void
+    -addToList(classFilePath: Path): void
+    +analyze(): void
+
+}
+
++class ReportGenerator{
+    +ReportGenerator()
+    +generateTextReport(analysisResults: List<String>, outputPath: Path): void
+}
+
+
++class ASMClassNode{
+    +cNode: ClassNode
+    +classDirPath: String
+    +ASMClassNode(node: ClassNode, dirPath: String)
+    +access(): int
+    +name(): String
+    +fields(): List<MyFieldNode>
+    +signature(): String
+    +superName(): String
+    +interfaces(): List<String>
+    +methods(): List<MyMethodNode>
+}
+
++class MyClassNode{
+    +MyClassNode()
+    +{abstract} access(): int
+    +{abstract} name(): String
+    +{abstract} fields(): List<MyFieldNode>
+    +{abstract} signature(): String
+    +{abstract} superName(): String
+    +{abstract} interfaces(): List<String>
+    +{abstract} methods(): List<MyMethodNode>
+}
+
++class ASMFieldNode{
+    +node: FieldNode
+    +ASMFieldNode(fNode: FieldNode)
+    +access(): int
+    +name(): String
+    +desc(): String
+    +signature(): String
+    +value(): Object
+}
+
++class MyFieldNode{
+    +MyFieldNode()
+    +{abstract} access(): int
+    +{abstract} name(): String
+    +{abstract} desc(): String
+    +{abstract} signature(): String
+    +{abstract} value(): Object
+}
+
++class ASMMethodNode{
+    +node: MethodNode
+    +ASMMethodNode(node: MethodNode)
+    +access(): int
+    +name(): String
+    +desc(): String
+    +signature(): String
+    +exceptions(): List<String>
+    +instructions(): InsnList
+    +maxLocals(): int
+}
+
++class MyMethodNode{
+    +MyMethodNode(node: MethodNode)
+    +{abstract} access(): int
+    +{abstract} name(): String
+    +{abstract} desc(): String
+    +{abstract} signature(): String
+    +{abstract} exceptions(): List<String>
+    +{abstract} instructions(): InsnList
+    +{abstract} maxLocals(): int
+}
+
++class ClassVisitorAdapter{
+    +ClassVisitorAdapter()
+    +visit(version: int, access: int, name: String, descriptor: String, signature: String, exceptions: String[]): void
+    +visitMethod(access: int, name: String, descriptor: String, signature: String, exceptions: String[]): MethodVisitor
+}
+
+ASMClassNode -u-|> MyClassNode
+ASMFieldNode -u-|> MyFieldNode
+ASMMethodNode -u-|> MyMethodNode
+CheckObserverPatternSubjectPart -l-|> ClassVisitorAdapter
+CheckObserverPatternObserverPart -l-|> ClassVisitorAdapter
+
+Check --> MyClassNode
+
+
+
+
+}
+
+package datasource{
+
+    +interface IClassFileReader{
+        +readClassFile(classFilePath: Path): MyClassNode
+    }
+
+    +class ClassFileReader{
+        +ClassFileReader()
+        +readClassFile(classFilePath: Path): MyClassNode
+    }
+
+    +interface WordLoader{
+        +loadSet(): void
+        +getWords(): Set<String>
+    }
+
+    +class GetWordsFromFile{
+        -filePath: String
+        -words: Set<String>
+        +GetWordsFromFile()
+        +loadSet(): void
+        +getWords(): Set<String>
+    }
+
+    ClassFileReader -u-.> IClassFileReader
+    GetWordsFromFile -u-.> WordLoader
+
+}
+
+main -d-> Analyzer
+
+Analyzer ..> IClassFileReader
+Analyzer ..> MyClassNode
+Analyzer --> MyClassNode
+Analyzer --> ReportGenerator
+Analyzer ..> MethodStyleCheck
+Analyzer ..> UnusedVariableChecker
+Analyzer ..> CheckClassName
+Analyzer ..> InformationHiding
+Analyzer ..> SingleResponsibilityPrinciple
+Analyzer ..> FacadePattern
+Analyzer ..> ObserverPattern
+Analyzer ..> StrategyPattern
+
+
+CheckClassName --> GetWordsFromFile
+
+MethodStyleCheck ..> MyMethodNode
+
+UnusedVariableChecker ..> MyMethodNode
+
+VariableNamingConventions ..> MyFieldNode
+
+CheckDuplicateCode --> MyMethodNode
+CheckDuplicateCode ..> MyMethodNode
+
+InformationHiding ..> MyFieldNode
+InformationHiding ..> MyMethodNode
+
+SingleResponsibilityPrinciple ..> MyMethodNode
+
+FacadePattern ..> MyMethodNode
+
+ObserverPattern --> CheckObserverPatternObserverPart
+ObserverPattern --> CheckObserverPatternSubjectPart
+
+StrategyPattern ..> MyFieldNode
+StrategyPattern ..> MyMethodNode
+
+
+
+
+
+
+@@enduml
