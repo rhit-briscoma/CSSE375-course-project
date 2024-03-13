@@ -1,10 +1,6 @@
 package domain.checks.style_checks;
 
-import java.util.ArrayList;
-
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.*;
 
 import domain.MyClassNode;
 import domain.MyFieldNode;
@@ -18,6 +14,8 @@ public class VariableNamingConventions extends StyleCheck {
 
     // ArrayList<String> reservedNames;
 
+    private StringBuilder sb = new StringBuilder();
+
     public VariableNamingConventions() {
     }
 
@@ -30,7 +28,7 @@ public class VariableNamingConventions extends StyleCheck {
                     result += field.name() + " is a constant without all uppercase letters" + "\n";
                 }
             } else if ((field.access() & Opcodes.ACC_PUBLIC) != 0) {
-                System.out.println(field.name());
+                // System.out.println(field.name());
                 String[] fieldName = field.name().split("(?<!^)(?=[A-Z])");
                 if(Character.isAlphabetic(fieldName[0].charAt(0)) == false){
                     result += field.name() + "does not start with a letter" + "\n";
@@ -49,7 +47,7 @@ public class VariableNamingConventions extends StyleCheck {
                     }
 
                 }
-               }   
+               }
             }
         }
         if(result.equals("")){
@@ -58,9 +56,41 @@ public class VariableNamingConventions extends StyleCheck {
         return result;
     }
 
+    private void checkForFinal(MyFieldNode field, String fieldName){
+        if ((field.access() & Opcodes.ACC_FINAL) != 0) {
+            if (fieldName.equals(fieldName.toUpperCase()) == false) {
+                this.sb.append(fieldName);
+                this.sb.append(" is a constant without all uppercase letters" + "\n");
+            }
+        }
+    }
+
+    private void checkForPublic(MyFieldNode field, String fieldName){
+        if ((field.access() & Opcodes.ACC_PUBLIC) != 0) {
+            String[] fieldNameArr = field.name().split("(?<!^)(?=[A-Z])");
+            if(Character.isAlphabetic(fieldNameArr[0].charAt(0)) == false){
+                this.sb.append(field.name()); 
+                this.sb.append("does not start with a letter" + "\n");
+            }
+        }
+    }
+
+    private void checkCase(String fieldName, String[] fieldNameArr){
+                if(Character.isUpperCase(fieldNameArr[0].charAt(0))){
+                    this.sb.append(fieldName); 
+                    this.sb.append(" starts with a capital letter but should be lower case." + "\n");
+                }    
+    }
+
     @Override
     public String performCheck(MyClassNode node) {
         this.node = node;
-        return performWork();
+        for (MyFieldNode field : this.node.fields()) {
+            String fieldName = field.name();
+            checkForFinal(field, fieldName);
+            checkForPublic(field, fieldName);
+            checkCase(fieldName, field.name().split("(?<!^)(?=[A-Z])"));
+        }
+        return this.sb.toString();
     }
 }

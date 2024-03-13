@@ -9,6 +9,7 @@ import domain.MyMethodNode;
 public class MethodStyleCheck extends StyleCheck {
 
     private ArrayList<String> methodNames = new ArrayList<>();
+    private StringBuilder sb = new StringBuilder("--------Testing Method Names--------\n");
 
     public MethodStyleCheck() {
     }
@@ -24,12 +25,12 @@ public class MethodStyleCheck extends StyleCheck {
     }
 
     // This is where most of the heavy lifting is done. An ArrayList and HashMap are used to help
-    // keep track annd store comparisions of method names. Confusing method names are found and are
+    // keep track and store comparisions of method names. Confusing method names are found and are
     // recorded in a StringBuilder to be displayed to the user in the report.
-    private String confusingMethodNames() {
+    private void confusingMethodNames() {
         HashMap<String, String> unique = new HashMap<String, String>();
         ArrayList<String> errorNames = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder("--------Testing Method Names--------\n");
+        // StringBuilder sb = new StringBuilder("--------Testing Method Names--------\n");
 
         // print("--------Testing Method Names--------\n");
 
@@ -49,11 +50,10 @@ public class MethodStyleCheck extends StyleCheck {
         } else {
             for (String name : errorNames) {
                 sb.append("Confusing method name found." + name + "differs from ");
-                sb.append(unique.get(name.toLowerCase()) + " only by capitalization");
+                sb.append(unique.get(name.toLowerCase()) + " only by capitalization" + "\n");
                 // print(sb.toString());
             }
         }
-        return sb.toString();
     }
     // this method checks if a given method is the constructor
     private boolean isInitMethod(MyMethodNode method) {
@@ -64,7 +64,8 @@ public class MethodStyleCheck extends StyleCheck {
     public String performCheck(MyClassNode node) {
         this.node = node;
         populateMethodNames();
-        return confusingMethodNames();
+        confusingMethodNames();
+        return this.sb.toString();
 
     }
 
