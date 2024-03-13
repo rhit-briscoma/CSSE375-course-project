@@ -12,7 +12,7 @@ public class GetWordsFromFile implements WordLoader {
     public GetWordsFromFile() {
         words = new HashSet<>();
         // filePath = "datasource/EnglishDictionary.csv";
-        filePath = "src/main/java/datasource/EnglishDictionary.csv";
+        filePath = "Previous Project/src/main/java/datasource/EnglishDictionary.csv";
         loadSet();
     }
 
