@@ -14,8 +14,6 @@ public class SingleResponsibilityPrinciple extends PrincipleCheck {
     private boolean likelyFollowsSRP;
 
     public SingleResponsibilityPrinciple(){
-        this.methodCount = node.methods().size();
-        this.fieldCount = node.fields().size();
         this.avgMethodComplexity = 0;
         this.methodInteractions = 0;
 
@@ -123,6 +121,8 @@ public class SingleResponsibilityPrinciple extends PrincipleCheck {
     @Override
     public String performCheck(MyClassNode node) {
         this.node = node;
+        this.methodCount = this.node.methods().size();
+        this.fieldCount = this.node.fields().size();
         sb.append("Checking Single Responsibility Principle for class: " + this.node.name());
         calculateComplexity();
         handleComplexity();
