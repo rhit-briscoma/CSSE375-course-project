@@ -20,12 +20,7 @@ public class StrategyPattern extends PatternCheck {
         Set<String> potentialStrategies = new HashSet<>();
         boolean isPotentialContext = false;
 
-        if (classNode.interfaces() != null && !classNode.interfaces().isEmpty()) {
-            for (String iface : classNode.interfaces()) {
-                potentialStrategies.add(iface);
-                result.add("Potential strategy interface found: " + iface);
-            }
-        }
+        findPotentialInterfaces(classNode, potentialStrategies, result);
 
         if (!potentialStrategies.isEmpty()) {
             for (String iface : potentialStrategies) {
@@ -36,19 +31,10 @@ public class StrategyPattern extends PatternCheck {
             }
         }
 
-        for (MyFieldNode field : classNode.fields()) {
-            if (isInterfaceType(field.desc())) {
-                result.add("Field with strategy interface type detected: " + field.desc());
-                isPotentialContext = true;
-            }
-        }
+        findFieldsWithStrategyInterfaces(classNode, isPotentialContext, result);
 
         if (isPotentialContext) {
-            for (MyMethodNode method : classNode.methods()) {
-                if (isDelegatingToStrategy(method)) {
-                    result.add("Method potentially delegating to a strategy: " + method.name());
-                }
-            }
+            findMethodsPotentiallyDelegatedToStrat(classNode, result);
         }
 
         if (!isPotentialContext && potentialStrategies.isEmpty()) {
@@ -74,5 +60,32 @@ public class StrategyPattern extends PatternCheck {
             }
         }
         return false;
+    }
+
+    void findMethodsPotentiallyDelegatedToStrat(MyClassNode classNode, StringJoiner result) {
+        for (MyMethodNode method : classNode.methods()) {
+            if (isDelegatingToStrategy(method)) {
+                result.add("Method potentially delegating to a strategy: " + method.name());
+            }
+        }
+    }
+
+    void findPotentialInterfaces(MyClassNode classNode, Set<String> strats, StringJoiner result) {
+        if (classNode.interfaces() != null && !classNode.interfaces().isEmpty()) {
+            for (String iface : classNode.interfaces()) {
+                strats.add(iface);
+                result.add("Potential strategy interface found: " + iface);
+            }
+        }
+    }
+
+    void findFieldsWithStrategyInterfaces(MyClassNode classNode, boolean isPotentialContext, 
+                                            StringJoiner result) {
+        for (MyFieldNode field : classNode.fields()) {
+            if (isInterfaceType(field.desc())) {
+                result.add("Field with strategy interface type detected: " + field.desc());
+                isPotentialContext = true;
+            }
+        }
     }
 }

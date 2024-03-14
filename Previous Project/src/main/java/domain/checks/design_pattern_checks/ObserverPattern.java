@@ -1,9 +1,8 @@
 package domain.checks.design_pattern_checks;
 
 import domain.MyClassNode;
-import domain.checks.Check;
 
-public class ObserverPattern extends Check {
+public class ObserverPattern extends PatternCheck {
 
     public ObserverPattern(){}
 

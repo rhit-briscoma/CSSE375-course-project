@@ -2,9 +2,6 @@ package domain.checks.design_principle_checks;
 
 import domain.MyClassNode;
 import domain.MyMethodNode;
-import org.objectweb.asm.tree.*;
-
-import java.io.IOException;
 
 public class CheckDuplicateCode extends PrincipleCheck {
 

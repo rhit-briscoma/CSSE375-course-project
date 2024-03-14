@@ -1,9 +1,6 @@
 package domain.checks.design_principle_checks;
 
-import java.util.ArrayList;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.Opcodes;
 
 import domain.MyClassNode;
 import domain.MyFieldNode;
@@ -13,12 +10,8 @@ public class InformationHiding extends PrincipleCheck {
 
     private MyClassNode currentNode = null;
     private int publicFields = 0;
-    private int privateFields = 0;
-    private int protectedFields = 0;
 
     private int publicMethods = 0;
-    private int privateMethods = 0;
-    private int protectedMethods = 0;
     
     public InformationHiding(){
     }
@@ -38,51 +31,22 @@ public class InformationHiding extends PrincipleCheck {
         // print("Checking on " + this.node.name);
         int numFields = 0;
             for (MyFieldNode field : this.node.fields()) {
-                int fieldOpcode = field.access();
-                checkAccessFlag(fieldOpcode, 1);
+                if((field.access() & Opcodes.ACC_PUBLIC) != 0) {
+                    publicFields++;
+                }
                 // System.out.println(fieldName + " has an Opcode of " + fieldOpcode);
                 numFields++;
             }
             int numMethods = 0;
             for (MyMethodNode method : this.node.methods()) {
-                int methodOpcode = method.access();
-                checkAccessFlag(methodOpcode, 2);
+                if((method.access() & Opcodes.ACC_PUBLIC) != 0) {
+                    publicMethods++;
+                }
                 // System.out.println(methodName + " has an Opcode of " + methodOpcode);
                 numMethods++;
             }
             finalCheck(numFields, numMethods, sb);
             return sb.toString();
-    }
-    // checkAccessFlag takes in a field or method's Opcode, which is used to determine it's access
-    // modifier as well as an identifying int to allow the program to know whether the input is a
-    // field or method. Once an access modifier is found, it is incremented in the class for use later.
-    private void checkAccessFlag(int code, int inputType){
-        // public = 1
-        // private = 2
-        // protected  = 4
-
-        switch(code){
-            case 1: 
-                if(inputType == 1){
-                    this.publicFields++;
-                } else {
-                    this.publicMethods++;
-                }
-
-            case 2:
-                if(inputType == 1){
-                    this.privateFields++;
-                } else {
-                    this.privateMethods++;
-                }
-
-            case 3: 
-                if(inputType == 1){
-                    this.protectedFields++;
-                } else {
-                    this.protectedMethods++;
-                }
-        }
     }
     
     // 
@@ -126,11 +90,7 @@ public class InformationHiding extends PrincipleCheck {
 
     private void resetCounter(){
         this.publicFields = 0;
-        this.privateFields = 0;
-        this.protectedFields = 0;
         this.publicMethods = 0;
-        this.privateMethods = 0;
-        this.protectedMethods = 0;
     }
 
     
