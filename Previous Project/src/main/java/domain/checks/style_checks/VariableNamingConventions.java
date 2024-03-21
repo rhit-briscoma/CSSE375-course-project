@@ -14,7 +14,7 @@ public class VariableNamingConventions extends StyleCheck {
 
     // ArrayList<String> reservedNames;
 
-    private StringBuilder sb = new StringBuilder();
+    private StringBuilder sb;
 
     public VariableNamingConventions() {
     }
@@ -85,11 +85,19 @@ public class VariableNamingConventions extends StyleCheck {
     @Override
     public String performCheck(MyClassNode node) {
         this.node = node;
+        sb = new StringBuilder();
         for (MyFieldNode field : this.node.fields()) {
             String fieldName = field.name();
+            if ((field.access() & Opcodes.ACC_FINAL) != 0) {
             checkForFinal(field, fieldName);
-            checkForPublic(field, fieldName);
-            checkCase(fieldName, field.name().split("(?<!^)(?=[A-Z])"));
+            }
+            else {
+                checkForPublic(field, fieldName);
+                checkCase(fieldName, field.name().split("(?<!^)(?=[A-Z])"));
+            }
+            if(sb.isEmpty()) {
+                sb.append("No violations to the Variable Naming Conventions");
+            }
         }
         return this.sb.toString();
     }

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 public class Analyzer {
     private IClassFileReader classFileReader;
     private ArrayList<Check> checks;
+    private ArrayList<Check> selectedChecks;
     private Path projectDirectory;
     private Scanner scanner;
 
@@ -35,6 +36,7 @@ public class Analyzer {
         this.projectDirectory = projectDirectory;
         this.scanner = scanner;
         this.checks = new ArrayList<>();
+        this.selectedChecks = new ArrayList<>();
         readFiles(projectDirectory);
         populateCheckObjects();
     }
@@ -87,8 +89,8 @@ public class Analyzer {
 
 
     public void analyze() {
-        ArrayList<String> analysisResults = new ArrayList<>();
-        ArrayList<Check> selectedChecks = new ArrayList<>();
+        // ArrayList<String> analysisResults = new ArrayList<>();
+        // ArrayList<Check> selectedChecks = new ArrayList<>();
     
         // Ask if all checks should be run
         System.out.println("Do you want to run all checks? (YES/no)");
@@ -108,7 +110,26 @@ public class Analyzer {
             }
         }
     
+        // // Run selected checks on all classes
+        // for (MyClassNode node : this.nodes) {
+        //     analysisResults.add("--------Performing Checks for " + node.name() + "--------\n");
+        //     for (Check check : selectedChecks) {
+        //         analysisResults.add(check.performCheck(node));
+        //         // analysisResults.add(check.performCheck(node));
+        //     }
+        // }
+        ArrayList<String> analysisResults = runChecks();
+    
+        ReportGenerator reportGenerator = new ReportGenerator();
+        Path reportPath = this.projectDirectory.resolve("linter-report.txt");
+        reportGenerator.generateTextReport(analysisResults, reportPath);
+        this.checks.clear();
+        selectedChecks.clear();
+    }
+
+    public ArrayList<String> runChecks() {
         // Run selected checks on all classes
+        ArrayList<String> analysisResults = new ArrayList<>();
         for (MyClassNode node : this.nodes) {
             analysisResults.add("--------Performing Checks for " + node.name() + "--------\n");
             for (Check check : selectedChecks) {
@@ -116,12 +137,15 @@ public class Analyzer {
                 // analysisResults.add(check.performCheck(node));
             }
         }
-    
-        ReportGenerator reportGenerator = new ReportGenerator();
-        Path reportPath = this.projectDirectory.resolve("linter-report.txt");
-        reportGenerator.generateTextReport(analysisResults, reportPath);
-        this.checks.clear();
-        selectedChecks.clear();
+        return analysisResults;
+    }
+
+    public void addCheck(Check check) {
+        selectedChecks.add(check);
+    }
+
+    public int getNodesNum() {
+        return nodes.size();
     }
     
     }
