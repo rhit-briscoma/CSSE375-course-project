@@ -121,8 +121,8 @@ public class SingleResponsibilityPrinciple extends PrincipleCheck {
     @Override
     public String performCheck(MyClassNode node) {
         this.node = node;
-        this.methodCount = node.methods().size();
-        this.fieldCount = node.fields().size();
+        this.methodCount = this.node.methods().size();
+        this.fieldCount = this.node.fields().size();
         sb.append("Checking Single Responsibility Principle for class: " + this.node.name());
         calculateComplexity();
         handleComplexity();
