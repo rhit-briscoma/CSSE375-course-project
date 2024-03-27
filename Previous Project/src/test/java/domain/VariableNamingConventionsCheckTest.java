@@ -1,13 +1,11 @@
 package domain;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 import datasource.ClassFileReader;
-import datasource.IClassFileReader;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -21,7 +19,7 @@ import domain.checks.style_checks.VariableNamingConventions;
 public class VariableNamingConventionsCheckTest {
 
     @Test
-    public void testVNCTestCheck1() {
+    public void testVNCFailure() {
         String directoryPath = "target/test-classes/domain/VariableNamingConventionsTest/VariableNamingConventionsFail";
         Path projectDirectory = Paths.get(System.getProperty("user.dir"), directoryPath);
         Scanner scanner = new Scanner(System.in);
@@ -40,7 +38,7 @@ public class VariableNamingConventionsCheckTest {
     }
 
     @Test
-    public void testVNCTestCheck2() {
+    public void testVNCPass() {
         String directoryPath = "C:/Users/hallamcs/CSSE375Project/CSSE375-course-project/Previous Project/target/test-classes/domain/VariableNamingConventionsTest/VariableNamingConventionsPass";
         Path projectDirectory = Paths.get(directoryPath);
         Scanner scanner = new Scanner(System.in);

@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class UnusedVariableChecker extends StyleCheck {
 
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb;
 
     Set<String> usedFields = new HashSet<>();
 
@@ -123,6 +123,7 @@ public class UnusedVariableChecker extends StyleCheck {
 
     @Override
     public String performCheck(MyClassNode node) {
+        sb = new StringBuilder();
         this.node = node;
         List<MyMethodNode> methods = node.methods();
         List<MyFieldNode> fields = node.fields();
