@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 
 public class SingleResponsibilityPrinciple extends PrincipleCheck {
 
-    private StringBuilder sb = new StringBuilder();
+    private StringBuilder sb;
     private int methodCount, fieldCount, methodInteractions;
     private double avgMethodComplexity;
     private boolean likelyFollowsSRP;
@@ -120,10 +120,13 @@ public class SingleResponsibilityPrinciple extends PrincipleCheck {
 
     @Override
     public String performCheck(MyClassNode node) {
+        sb = new StringBuilder();
+        this.avgMethodComplexity = 0;
+        this.methodInteractions = 0;
         this.node = node;
         this.methodCount = this.node.methods().size();
         this.fieldCount = this.node.fields().size();
-        sb.append("Checking Single Responsibility Principle for class: " + this.node.name());
+        sb.append("Checking Single Responsibility Principle for class: " + this.node.name() + '\n');
         calculateComplexity();
         handleComplexity();
         return sb.toString();
