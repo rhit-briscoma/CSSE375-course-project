@@ -9,9 +9,9 @@ import domain.MyMethodNode;
 public class InformationHiding extends PrincipleCheck {
 
     private MyClassNode currentNode = null;
-    private int publicFields = 0;
+    private double publicFields = 0;
 
-    private int publicMethods = 0;
+    private double publicMethods = 0;
     
     public InformationHiding(){
     }
@@ -29,7 +29,7 @@ public class InformationHiding extends PrincipleCheck {
         this.currentNode = this.node;
         StringBuilder sb = new StringBuilder("Checking on " + this.currentNode.name());
         // print("Checking on " + this.node.name);
-        int numFields = 0;
+        double numFields = 0;
             for (MyFieldNode field : this.node.fields()) {
                 if((field.access() & Opcodes.ACC_PUBLIC) != 0) {
                     publicFields++;
@@ -37,7 +37,7 @@ public class InformationHiding extends PrincipleCheck {
                 // System.out.println(fieldName + " has an Opcode of " + fieldOpcode);
                 numFields++;
             }
-            int numMethods = 0;
+            double numMethods = 0;
             for (MyMethodNode method : this.node.methods()) {
                 if((method.access() & Opcodes.ACC_PUBLIC) != 0) {
                     publicMethods++;
@@ -50,7 +50,7 @@ public class InformationHiding extends PrincipleCheck {
     }
     
     // 
-    private void finalCheck(int numFields, int numMethods, StringBuilder sb2){
+    private void finalCheck(double numFields, double numMethods, StringBuilder sb2){
         StringBuilder sb = new StringBuilder("\nInformation Hiding Report for " + this.node.name() + " :\n");
 
         if(numFields >= 4){

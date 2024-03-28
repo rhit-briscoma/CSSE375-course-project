@@ -9,7 +9,7 @@ import domain.MyMethodNode;
 public class MethodStyleCheck extends StyleCheck {
 
     private ArrayList<String> methodNames = new ArrayList<>();
-    private StringBuilder sb = new StringBuilder("--------Testing Method Names--------\n");
+    private StringBuilder sb;
 
     public MethodStyleCheck() {
     }
@@ -49,7 +49,7 @@ public class MethodStyleCheck extends StyleCheck {
             // System.out.println("No confusing method names.\n");
         } else {
             for (String name : errorNames) {
-                sb.append("Confusing method name found." + name + "differs from ");
+                sb.append("Confusing method name found. " + name + " differs from ");
                 sb.append(unique.get(name.toLowerCase()) + " only by capitalization" + "\n");
                 // print(sb.toString());
             }
@@ -62,6 +62,7 @@ public class MethodStyleCheck extends StyleCheck {
     // abstract method that is used to call functionality withinn the class.
     @Override
     public String performCheck(MyClassNode node) {
+        sb = new StringBuilder("--------Testing Method Names--------\n");
         this.node = node;
         populateMethodNames();
         confusingMethodNames();
