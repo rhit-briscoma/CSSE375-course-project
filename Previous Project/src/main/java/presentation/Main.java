@@ -10,6 +10,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        MyFrame frame = new MyFrame();
+        frame.displayFrame();
+        initialize();
+    }
+
+    private static void initialize(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the project directory path: ");
 
