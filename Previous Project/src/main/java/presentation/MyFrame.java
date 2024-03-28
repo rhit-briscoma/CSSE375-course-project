@@ -37,7 +37,7 @@ public class MyFrame extends JFrame {
     private JFileChooser fc;
     private JTextField tf;
     private int result;
-    private String path, manualPath;
+    private String path, tfPathString;
     private Path manualPath1, manualPath2;
 
     public MyFrame() {
@@ -108,19 +108,21 @@ public class MyFrame extends JFrame {
                     if (checkDirectory(manualPath1)) {
                         // do work like console version
                         System.out.println("SUCCESS!\n");
+                        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
+                        return;
                     }
                 }
-                manualPath = tf.getSelectedText();
-                System.out.println(manualPath);
-                if (manualPath != null) {
-                    manualPath2 = Paths.get(manualPath);
-                    System.out.println(manualPath);
+                tfPathString = tf.getText();
+                System.out.println("tfPathString is" + tfPathString);
+                if (tfPathString != null) {
+                    manualPath2 = Paths.get(tfPathString);
+                    System.out.println(tfPathString);
                     System.out.println(manualPath2);
                     if (checkDirectory(manualPath2)) {
                         // do work like console version
                         System.out.println("SUCCESS!\n");
                     }
-                }  else JOptionPane.showMessageDialog(null, "Please provide an appropriate directory.");
+                } else JOptionPane.showMessageDialog(null, "Please provide an appropriate directory.");
             }
 
         });
@@ -151,9 +153,8 @@ public class MyFrame extends JFrame {
                 System.out.println("Opened JFileChooser");
                 if (result == JFileChooser.APPROVE_OPTION) {
                     path = fc.getSelectedFile().getAbsolutePath();
-                    // manualPath1 = Paths.get(System.getProperty("user.dir"), path);
                     manualPath1 = Paths.get(path);
-                    System.out.println(manualPath);
+                    System.out.println(tfPathString);
                 } else if(result == JFileChooser.CANCEL_OPTION) {
                     return;  
                 } else JOptionPane.showMessageDialog(null, "Error: project directory is not valid.");
