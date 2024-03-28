@@ -12,13 +12,15 @@ import java.util.StringJoiner;
 
 public class StrategyPattern extends PatternCheck {
 
+    boolean isPotentialContext = false;
+
     public StrategyPattern(){}
 
     @Override
     public String performCheck(MyClassNode classNode) {
         StringJoiner result = new StringJoiner("\n");
         Set<String> potentialStrategies = new HashSet<>();
-        boolean isPotentialContext = false;
+        this.isPotentialContext = false;
 
         findPotentialInterfaces(classNode, potentialStrategies, result);
 
@@ -84,7 +86,7 @@ public class StrategyPattern extends PatternCheck {
         for (MyFieldNode field : classNode.fields()) {
             if (isInterfaceType(field.desc())) {
                 result.add("Field with strategy interface type detected: " + field.desc());
-                isPotentialContext = true;
+                this.isPotentialContext = true;
             }
         }
     }

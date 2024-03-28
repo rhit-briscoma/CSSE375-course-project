@@ -1,4 +1,4 @@
-package domain;
+package domain.DuplicateCodeTest.DuplicateCodeFail;
 
 public class DuplicateCodeExampleTrue {
     public void countToNine() {

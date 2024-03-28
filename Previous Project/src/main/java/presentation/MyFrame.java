@@ -102,15 +102,20 @@ public class MyFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("ManualPath1 " + manualPath1);
                 if (manualPath1 != null) {
+                    System.out.println("In manualPath1");
                     if (checkDirectory(manualPath1)) {
                         // do work like console version
                         System.out.println("SUCCESS!\n");
                     }
                 }
                 manualPath = tf.getSelectedText();
+                System.out.println(manualPath);
                 if (manualPath != null) {
                     manualPath2 = Paths.get(manualPath);
+                    System.out.println(manualPath);
+                    System.out.println(manualPath2);
                     if (checkDirectory(manualPath2)) {
                         // do work like console version
                         System.out.println("SUCCESS!\n");
@@ -143,10 +148,12 @@ public class MyFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 result = fc.showOpenDialog(null);
-
+                System.out.println("Opened JFileChooser");
                 if (result == JFileChooser.APPROVE_OPTION) {
                     path = fc.getSelectedFile().getAbsolutePath();
-                    manualPath1 = Paths.get(System.getProperty("user.dir"), path);
+                    // manualPath1 = Paths.get(System.getProperty("user.dir"), path);
+                    manualPath1 = Paths.get(path);
+                    System.out.println(manualPath);
                 } else if(result == JFileChooser.CANCEL_OPTION) {
                     return;  
                 } else JOptionPane.showMessageDialog(null, "Error: project directory is not valid.");
@@ -161,7 +168,7 @@ public class MyFrame extends JFrame {
     }
 
     private boolean checkDirectory(Path projectPath) {
-        if (Files.isDirectory(manualPath2)) {
+        if (Files.isDirectory(projectPath)) {
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "File Path does not point to a directory.");

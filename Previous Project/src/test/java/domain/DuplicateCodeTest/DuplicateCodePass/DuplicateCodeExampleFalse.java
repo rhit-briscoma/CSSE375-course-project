@@ -1,4 +1,4 @@
-package domain;
+package domain.DuplicateCodeTest.DuplicateCodePass;
 
 public class DuplicateCodeExampleFalse {
     public void countToTen() {

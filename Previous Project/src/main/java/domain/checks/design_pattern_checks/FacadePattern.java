@@ -15,7 +15,7 @@ public class FacadePattern extends PatternCheck {
         StringBuilder sb = new StringBuilder();
 
         
-        sb.append("Checking for Facade Pattern in class: ").append(node.name());
+        sb.append("Checking for Facade Pattern in class: ").append(node.name() + '\n');
 
         // Count the number of methods that delegate tasks (a simplified heuristic)
         int delegationMethods = 0;
