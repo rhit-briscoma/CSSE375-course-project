@@ -1,5 +1,6 @@
 package domain;
 
+import datasource.ClassFileReader;
 import datasource.IClassFileReader;
 import domain.checks.Check;
 import domain.checks.design_pattern_checks.DecoratorPattern;
@@ -38,6 +39,15 @@ public class Analyzer {
         this.checks = new ArrayList<>();
         this.selectedChecks = new ArrayList<>();
         readFiles(projectDirectory);
+        populateCheckObjects();
+    }
+
+    public Analyzer(ClassFileReader classFileReader, Path projectDirectory) {
+        this.classFileReader = classFileReader;
+        this.projectDirectory = projectDirectory;
+        this.checks = new ArrayList<>();
+        this.selectedChecks = new ArrayList<>();
+        readFiles(this.projectDirectory);
         populateCheckObjects();
     }
 
@@ -118,6 +128,17 @@ public class Analyzer {
         //         // analysisResults.add(check.performCheck(node));
         //     }
         // }
+        ArrayList<String> analysisResults = runChecks();
+    
+        ReportGenerator reportGenerator = new ReportGenerator();
+        Path reportPath = this.projectDirectory.resolve("linter-report.txt");
+        reportGenerator.generateTextReport(analysisResults, reportPath);
+        this.checks.clear();
+        selectedChecks.clear();
+    }
+
+    public void analyzeGUI(){
+        selectedChecks.addAll(this.checks);
         ArrayList<String> analysisResults = runChecks();
     
         ReportGenerator reportGenerator = new ReportGenerator();

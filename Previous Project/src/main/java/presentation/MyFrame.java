@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
+import domain.Analyzer;
 import javafx.scene.layout.Border;
 
 import java.awt.BorderLayout;
@@ -107,8 +108,9 @@ public class MyFrame extends JFrame {
                     System.out.println("In manualPath1");
                     if (checkDirectory(manualPath1)) {
                         // do work like console version
-                        System.out.println("SUCCESS!\n");
                         JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
+                        startLinter(manualPath1);
+                        System.out.println("SUCCESS!\n");
                         return;
                     }
                 }
@@ -120,6 +122,8 @@ public class MyFrame extends JFrame {
                     System.out.println(manualPath2);
                     if (checkDirectory(manualPath2)) {
                         // do work like console version
+                        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
+                        startLinter(manualPath2);
                         System.out.println("SUCCESS!\n");
                     }
                 } else JOptionPane.showMessageDialog(null, "Please provide an appropriate directory.");
@@ -183,6 +187,11 @@ public class MyFrame extends JFrame {
 
     public void hideFrame() {
         myFrame.setVisible(false);
+    }
+
+    public void startLinter(Path path){
+        Main.startLinter(path);
+        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in linter-report.txt");
     }
 
 }

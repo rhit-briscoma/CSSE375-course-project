@@ -28,5 +28,10 @@ public class Main {
 
         scanner.close(); 
     }
+
+    public static void startLinter(Path projectDirectory){
+        Analyzer analyzer = new Analyzer(new ClassFileReader(), projectDirectory);
+        analyzer.analyzeGUI();
+    }
 }
 
