@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -138,7 +139,7 @@ public class Analyzer {
     }
 
     public void analyzeGUI(){
-        selectedChecks.addAll(this.checks);
+        // selectedChecks.addAll(this.checks);
         ArrayList<String> analysisResults = runChecks();
     
         ReportGenerator reportGenerator = new ReportGenerator();
@@ -163,6 +164,10 @@ public class Analyzer {
 
     public void addCheck(Check check) {
         selectedChecks.add(check);
+    }
+
+    public void addAllChecks(List<Check> checks) {
+        selectedChecks.addAll(checks);
     }
 
     public int getNodesNum() {

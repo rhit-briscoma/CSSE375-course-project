@@ -10,7 +10,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import datasource.ClassFileReader;
 import domain.Analyzer;
+import domain.checks.Check;
+import domain.checks.design_pattern_checks.DecoratorPattern;
+import domain.checks.design_pattern_checks.FacadePattern;
+import domain.checks.design_pattern_checks.ObserverPattern;
+import domain.checks.design_pattern_checks.StrategyPattern;
+import domain.checks.design_principle_checks.CheckDuplicateCode;
+import domain.checks.design_principle_checks.InformationHiding;
+import domain.checks.design_principle_checks.SingleResponsibilityPrinciple;
+import domain.checks.style_checks.CheckClassName;
+import domain.checks.style_checks.MethodStyleCheck;
+import domain.checks.style_checks.UnusedVariableChecker;
+import domain.checks.style_checks.VariableNamingConventions;
 import javafx.scene.layout.Border;
 
 import java.awt.BorderLayout;
@@ -23,6 +36,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class MyFrame extends JFrame {
 
@@ -202,7 +216,7 @@ public class MyFrame extends JFrame {
 
         String[] patternNames = {"All", "Decorator", "Facade", "Observer", "Strategy"};
         String[] principleNames = {"All", "Code Duplication", "Information Hiding", "Single Responsibility Principle"};
-        String[] styleNames = {"All", "Proper Class Names", "Proper Method Names", "Unused Variables", "Proper Variables Names"};
+        String[] styleNames = {"All", "Proper Class Names", "Proper Method Names", "Check for Unused Variables", "Proper Variables Names"};
 
         styleOptions = new JComboBox<>(styleNames);
         styleOptions.setPreferredSize(minimum);
@@ -241,8 +255,55 @@ public class MyFrame extends JFrame {
     }
 
     public void startLinter(Path path){
-        Main.startLinter(path);
-        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in linter-report.txt");
+        Analyzer analyzer = new Analyzer(new ClassFileReader(), path);
+        // analyzer.analyzeGUI();
+
+        if(styleOptions.isEnabled()) {
+            ArrayList<Check> styleChecks = new ArrayList<>();
+            styleChecks.add(new CheckClassName());
+            styleChecks.add(new MethodStyleCheck());
+            styleChecks.add(new UnusedVariableChecker());
+            styleChecks.add(new VariableNamingConventions());
+
+            int currentOption = styleOptions.getSelectedIndex();
+            if(currentOption == 0) {
+                analyzer.addAllChecks(styleChecks);
+            } else {
+                analyzer.addCheck(styleChecks.get(currentOption - 1));
+            }
+        }
+
+        if(principleOptions.isEnabled()) {
+            ArrayList<Check> principleChecks = new ArrayList<>();
+            principleChecks.add(new CheckDuplicateCode());
+            principleChecks.add(new InformationHiding());
+            principleChecks.add(new SingleResponsibilityPrinciple());
+
+            int currentOption = principleOptions.getSelectedIndex();
+            if(currentOption == 0) {
+                analyzer.addAllChecks(principleChecks);
+            } else {
+                analyzer.addCheck(principleChecks.get(currentOption--));
+            }
+        }
+
+        if(patternOptions.isEnabled()) {
+            ArrayList<Check> patternChecks = new ArrayList<>();
+            patternChecks.add(new DecoratorPattern());
+            patternChecks.add(new FacadePattern());
+            patternChecks.add(new ObserverPattern());
+            patternChecks.add(new StrategyPattern());
+
+            int currentOption = patternOptions.getSelectedIndex();
+            if(currentOption == 0) {
+                analyzer.addAllChecks(patternChecks);
+            } else {
+                analyzer.addCheck(patternChecks.get(currentOption--));
+            }
+        }
+        analyzer.analyzeGUI();
+        // Main.startLinter(path);
+        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
     }
 
 }
