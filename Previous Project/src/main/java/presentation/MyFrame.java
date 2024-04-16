@@ -1,6 +1,8 @@
 package presentation;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,9 +29,14 @@ public class MyFrame extends JFrame {
     public static final int FRAME_WIDTH = 1280;
     public static final int FRAME_HEIGHT = 800;
 
+    public static final int STYLISH_WIDTH = 225;
+    public static final int STYLISH_HEIGHT = 25;
+    Dimension minimum = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
     private JFrame myFrame;
     private JPanel north, east, south, west, center;
     private JButton run, quit, explorerButton;
+    private JCheckBox patternChecksBox, principleChecksBox, styleChecksBox;
+    private JComboBox<String> patternOptions, principleOptions, styleOptions;
     private JFileChooser fc;
     private JTextField tf;
     private int result;
@@ -49,8 +56,8 @@ public class MyFrame extends JFrame {
     private void buildComponents() {
         buildPanels();
         buildLabels();
-        buildButtons();
         buildInteractive();
+        buildButtons();
 
     }
 
@@ -64,7 +71,7 @@ public class MyFrame extends JFrame {
         west = new JPanel();
         center = new JPanel();
         center.setBackground(Color.cyan);
-        center.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 25));
+        center.setLayout(new FlowLayout(FlowLayout.CENTER, 200, 25));
         myFrame.add(north, BorderLayout.NORTH);
         myFrame.add(east, BorderLayout.EAST);
         myFrame.add(south, BorderLayout.SOUTH);
@@ -134,8 +141,38 @@ public class MyFrame extends JFrame {
             }
 
         });
+        styleChecksBox = new JCheckBox("Enable/Disable Style Checks");
+        styleChecksBox.setPreferredSize(minimum);
+        styleChecksBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                styleOptions.setEnabled(!styleOptions.isEnabled());
+            }
+        });
+
+        principleChecksBox = new JCheckBox("Enable/Disable Principle Checks");
+        principleChecksBox.setPreferredSize(minimum);
+        principleChecksBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                principleOptions.setEnabled(!principleOptions.isEnabled());
+            }
+        });
+
+        patternChecksBox = new JCheckBox("Enable/Disable Pattern Checks");
+        patternChecksBox.setPreferredSize(minimum);
+        patternChecksBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                patternOptions.setEnabled(!patternOptions.isEnabled());
+            }
+        });
+
         south.add(run);
         south.add(quit);
+        center.add(styleChecksBox);
+        center.add(principleChecksBox);
+        center.add(patternChecksBox);
     }
 
     private void buildInteractive() {
@@ -163,8 +200,27 @@ public class MyFrame extends JFrame {
         tf = new JTextField("Enter project direcotry path here.", 60);
         tf.setHorizontalAlignment((int) LEFT_ALIGNMENT);
 
+        String[] patternNames = {"All", "Decorator", "Facade", "Observer", "Strategy"};
+        String[] principleNames = {"All", "Code Duplication", "Information Hiding", "Single Responsibility Principle"};
+        String[] styleNames = {"All", "Proper Class Names", "Proper Method Names", "Unused Variables", "Proper Variables Names"};
+
+        styleOptions = new JComboBox<>(styleNames);
+        styleOptions.setPreferredSize(minimum);
+        styleOptions.setEnabled(false);
+
+        principleOptions = new JComboBox<>(principleNames);
+        principleOptions.setPreferredSize(minimum);
+        principleOptions.setEnabled(false);
+
+        patternOptions = new JComboBox<>(patternNames);
+        patternOptions.setPreferredSize(minimum);
+        patternOptions.setEnabled(false);
+
         center.add(tf);
         center.add(explorerButton);
+        center.add(styleOptions);
+        center.add(principleOptions);
+        center.add(patternOptions);
     }
 
     private boolean checkDirectory(Path projectPath) {
