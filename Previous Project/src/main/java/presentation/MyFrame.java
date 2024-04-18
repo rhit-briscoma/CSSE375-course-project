@@ -45,7 +45,7 @@ public class MyFrame extends JFrame {
 
     public static final int STYLISH_WIDTH = 225;
     public static final int STYLISH_HEIGHT = 25;
-    Dimension minimum = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
+    Dimension stylishBoxDimensions = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
     private JFrame myFrame;
     private JPanel north, east, south, west, center;
     private JButton run, quit, explorerButton;
@@ -156,7 +156,7 @@ public class MyFrame extends JFrame {
 
         });
         styleChecksBox = new JCheckBox("Enable/Disable Style Checks");
-        styleChecksBox.setPreferredSize(minimum);
+        styleChecksBox.setPreferredSize(stylishBoxDimensions);
         styleChecksBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,7 +165,7 @@ public class MyFrame extends JFrame {
         });
 
         principleChecksBox = new JCheckBox("Enable/Disable Principle Checks");
-        principleChecksBox.setPreferredSize(minimum);
+        principleChecksBox.setPreferredSize(stylishBoxDimensions);
         principleChecksBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,7 +174,7 @@ public class MyFrame extends JFrame {
         });
 
         patternChecksBox = new JCheckBox("Enable/Disable Pattern Checks");
-        patternChecksBox.setPreferredSize(minimum);
+        patternChecksBox.setPreferredSize(stylishBoxDimensions);
         patternChecksBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,15 +219,15 @@ public class MyFrame extends JFrame {
         String[] styleNames = {"All", "Proper Class Names", "Proper Method Names", "Check for Unused Variables", "Proper Variables Names"};
 
         styleOptions = new JComboBox<>(styleNames);
-        styleOptions.setPreferredSize(minimum);
+        styleOptions.setPreferredSize(stylishBoxDimensions);
         styleOptions.setEnabled(false);
 
         principleOptions = new JComboBox<>(principleNames);
-        principleOptions.setPreferredSize(minimum);
+        principleOptions.setPreferredSize(stylishBoxDimensions);
         principleOptions.setEnabled(false);
 
         patternOptions = new JComboBox<>(patternNames);
-        patternOptions.setPreferredSize(minimum);
+        patternOptions.setPreferredSize(stylishBoxDimensions);
         patternOptions.setEnabled(false);
 
         center.add(tf);
