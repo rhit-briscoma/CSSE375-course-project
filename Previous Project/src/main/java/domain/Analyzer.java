@@ -156,7 +156,6 @@ public class Analyzer {
             analysisResults.add("--------Performing Checks for " + node.name() + "--------\n");
             for (Check check : selectedChecks) {
                 analysisResults.add(check.performCheck(node));
-                // analysisResults.add(check.performCheck(node));
             }
         }
         return analysisResults;
@@ -170,8 +169,18 @@ public class Analyzer {
         selectedChecks.addAll(checks);
     }
 
+    // testing methods
+
     public int getNodesNum() {
         return nodes.size();
+    }
+
+    public int getNumberOfChecks() {
+        return selectedChecks.size();
+    }
+
+    public ArrayList<Check> getSelectedChecks() {
+        return selectedChecks;
     }
     
     }

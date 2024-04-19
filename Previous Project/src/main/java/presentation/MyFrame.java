@@ -47,15 +47,17 @@ public class MyFrame extends JFrame {
     public static final int STYLISH_HEIGHT = 25;
     Dimension stylishBoxDimensions = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
     private JFrame myFrame;
+    private JLabel title, desc1, desc2;
     private JPanel north, east, south, west, center;
     private JButton run, quit, explorerButton;
-    private JCheckBox patternChecksBox, principleChecksBox, styleChecksBox;
+    private JCheckBox patternChecksBox, principleChecksBox, styleChecksBox, darkMode;
     private JComboBox<String> patternOptions, principleOptions, styleOptions;
     private JFileChooser fc;
     private JTextField tf;
     private int result;
     private String path, tfPathString;
     private Path manualPath1, manualPath2;
+    private Analyzer analyzer;
 
     public MyFrame() {
         myFrame = new JFrame("Java Linter");
@@ -95,15 +97,15 @@ public class MyFrame extends JFrame {
 
     private void buildLabels() {
         // labels
-        JLabel title = new JLabel("Java Linter");
+        title = new JLabel("Java Linter");
         title.setPreferredSize(new Dimension(100, 50));
         north.add(title);
 
-        JLabel desc1 = new JLabel("This program will read in Java .class files and run various checks on code.\n test"
+        desc1 = new JLabel("This program will read in Java .class files and run various checks on code.\n test"
                 + "Please select a directory via the file explorer or enter a file path for a project direcory.");
         desc1.setPreferredSize(new Dimension(1250, 25));
 
-        JLabel desc2 = new JLabel(
+        desc2 = new JLabel(
                 "Please enter or select a Java project directory to run through the linter program and select the checks you would like to run.");
         desc2.setPreferredSize(new Dimension(1250, 25));
         // center.add(desc);
@@ -124,9 +126,7 @@ public class MyFrame extends JFrame {
                     System.out.println("In manualPath1");
                     if (checkDirectory(manualPath1)) {
                         // do work like console version
-                        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
-                        startLinter(manualPath1);
-                        System.out.println("SUCCESS!\n");
+                        runLinter(manualPath1);
                         return;
                     }
                 }
@@ -138,9 +138,7 @@ public class MyFrame extends JFrame {
                     System.out.println(manualPath2);
                     if (checkDirectory(manualPath2)) {
                         // do work like console version
-                        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
-                        startLinter(manualPath2);
-                        System.out.println("SUCCESS!\n");
+                        runLinter(manualPath2);
                     }
                 } else JOptionPane.showMessageDialog(null, "Please provide an appropriate directory.");
             }
@@ -182,11 +180,48 @@ public class MyFrame extends JFrame {
             }
         });
 
+        darkMode = new JCheckBox("Enable/Disable Dark Mode");
+        darkMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (darkMode.isSelected()) {
+                    north.setBackground(Color.DARK_GRAY);
+                    east.setBackground(Color.DARK_GRAY);
+                    south.setBackground(Color.DARK_GRAY);
+                    west.setBackground(Color.DARK_GRAY);
+                    center.setBackground(Color.DARK_GRAY);
+                    title.setForeground(Color.WHITE);
+                    desc1.setForeground(Color.WHITE);
+                    desc2.setForeground(Color.WHITE);
+                }
+                else {
+                    north.setBackground(Color.RED);
+                    east.setBackground(Color.WHITE);
+                    south.setBackground(Color.GREEN);
+                    west.setBackground(Color.WHITE);
+                    center.setBackground(Color.cyan);
+                    title.setForeground(Color.BLACK);
+                    desc1.setForeground(Color.BLACK);
+                    desc2.setForeground(Color.BLACK);
+                }
+            }
+        });
+
+        north.add(darkMode);
         south.add(run);
         south.add(quit);
         center.add(styleChecksBox);
         center.add(principleChecksBox);
         center.add(patternChecksBox);
+    }
+
+    private void runLinter(Path validPath) {
+        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
+        analyzer = new Analyzer(new ClassFileReader(), validPath);
+        setupAnalyzerWithCorrectChecks(analyzer);
+        analyzer.analyzeGUI();
+        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
+        System.out.println("SUCCESS!\n");
     }
 
     private void buildInteractive() {
@@ -211,7 +246,7 @@ public class MyFrame extends JFrame {
             }
 
         });
-        tf = new JTextField("Enter project direcotry path here.", 60);
+        tf = new JTextField("Enter project directory path here.", 60);
         tf.setHorizontalAlignment((int) LEFT_ALIGNMENT);
 
         String[] patternNames = {"All", "Decorator", "Facade", "Observer", "Strategy"};
@@ -254,8 +289,7 @@ public class MyFrame extends JFrame {
         myFrame.setVisible(false);
     }
 
-    public void startLinter(Path path){
-        Analyzer analyzer = new Analyzer(new ClassFileReader(), path);
+    public void setupAnalyzerWithCorrectChecks(Analyzer analyzer){
         // analyzer.analyzeGUI();
 
         if(styleOptions.isEnabled()) {
@@ -283,7 +317,7 @@ public class MyFrame extends JFrame {
             if(currentOption == 0) {
                 analyzer.addAllChecks(principleChecks);
             } else {
-                analyzer.addCheck(principleChecks.get(currentOption--));
+                analyzer.addCheck(principleChecks.get(currentOption - 1));
             }
         }
 
@@ -298,12 +332,35 @@ public class MyFrame extends JFrame {
             if(currentOption == 0) {
                 analyzer.addAllChecks(patternChecks);
             } else {
-                analyzer.addCheck(patternChecks.get(currentOption--));
+                analyzer.addCheck(patternChecks.get(currentOption - 1));
             }
         }
-        analyzer.analyzeGUI();
         // Main.startLinter(path);
-        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
+    }
+
+    // Methods used for testing GUI
+    public void toggleStyleComboBox() {
+        styleOptions.setEnabled(!styleOptions.isEnabled());
+    }
+
+    public void togglePrincipleComboBox() {
+        principleOptions.setEnabled(!principleOptions.isEnabled());
+    }
+
+    public void togglePatternComboBox() {
+        patternOptions.setEnabled(!patternOptions.isEnabled());
+    }
+
+    public void setStyleComboBoxOption(int newIndex) {
+        styleOptions.setSelectedIndex(newIndex);
+    }
+
+    public void setPrincipleComboBoxOption(int newIndex) {
+        principleOptions.setSelectedIndex(newIndex);
+    }
+
+    public void setPatternComboBoxOption(int newIndex) {
+        patternOptions.setSelectedIndex(newIndex);
     }
 
 }
