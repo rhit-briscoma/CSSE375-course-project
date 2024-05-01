@@ -32,7 +32,7 @@ public class CheckClassName extends StyleCheck {
     public String performCheck(MyClassNode node) {
         this.node = node;
         if (!result(this.node.name())) {
-            return "The class name is not in Pascal Case. Please refactor " + this.node.name()
+            return "The class name is not in Pascal Case. Please refactor " + this.node.getClass().getName()
                     + " so that it meets Pascal Case standards.";
         } else
         return "No issues with " + this.node.name() + "'s class name.";
