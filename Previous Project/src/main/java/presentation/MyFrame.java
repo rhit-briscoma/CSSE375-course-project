@@ -80,13 +80,16 @@ public class MyFrame extends JFrame {
     private void buildPanels() {
         // panels for GridLayout
         north = new JPanel();
-        north.setBackground(Color.RED);
+        // north.setBackground(Color.RED);
+        north.setBackground(Color.WHITE);
         east = new JPanel();
         south = new JPanel();
-        south.setBackground(Color.GREEN);
+        // south.setBackground(Color.GREEN);
+        south.setBackground(Color.WHITE);
         west = new JPanel();
         center = new JPanel();
-        center.setBackground(Color.cyan);
+        // center.setBackground(Color.cyan);
+        center.setBackground(Color.WHITE);
         center.setLayout(new FlowLayout(FlowLayout.CENTER, 200, 25));
         myFrame.add(north, BorderLayout.NORTH);
         myFrame.add(east, BorderLayout.EAST);
@@ -195,11 +198,11 @@ public class MyFrame extends JFrame {
                     desc2.setForeground(Color.WHITE);
                 }
                 else {
-                    north.setBackground(Color.RED);
+                    north.setBackground(Color.WHITE);
                     east.setBackground(Color.WHITE);
-                    south.setBackground(Color.GREEN);
+                    south.setBackground(Color.WHITE);
                     west.setBackground(Color.WHITE);
-                    center.setBackground(Color.cyan);
+                    center.setBackground(Color.WHITE);
                     title.setForeground(Color.BLACK);
                     desc1.setForeground(Color.BLACK);
                     desc2.setForeground(Color.BLACK);
@@ -214,14 +217,21 @@ public class MyFrame extends JFrame {
         center.add(principleChecksBox);
         center.add(patternChecksBox);
     }
-
+    
     private void runLinter(Path validPath) {
-        JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
+        // JOptionPane.showMessageDialog(null, "Directory selected, program starting.");
         analyzer = new Analyzer(new ClassFileReader(), validPath);
         setupAnalyzerWithCorrectChecks(analyzer);
-        analyzer.analyzeGUI();
-        JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
-        System.out.println("SUCCESS!\n");
+        if(analyzer.getNumberOfChecks() == 0) {
+            JOptionPane.showMessageDialog(null, "No checks selected. Please select some checks to run.");
+            System.out.println("No checks ran\n");
+        }
+        else {
+            analyzer.analyzeGUI();
+            JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
+            System.out.println("SUCCESS!\n");
+        }
+        
     }
 
     private void buildInteractive() {
