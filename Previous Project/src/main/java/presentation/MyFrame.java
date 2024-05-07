@@ -24,7 +24,6 @@ import domain.checks.style_checks.CheckClassName;
 import domain.checks.style_checks.MethodStyleCheck;
 import domain.checks.style_checks.UnusedVariableChecker;
 import domain.checks.style_checks.VariableNamingConventions;
-import javafx.scene.layout.Border;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,7 +48,7 @@ public class MyFrame extends JFrame {
     private JFrame myFrame;
     private JLabel title, desc1, desc2;
     private JPanel north, east, south, west, center;
-    private JButton run, quit, explorerButton;
+    private JButton run, viewResults, quit, explorerButton;
     private JCheckBox patternChecksBox, principleChecksBox, styleChecksBox, darkMode;
     private JComboBox<String> patternOptions, principleOptions, styleOptions;
     private JFileChooser fc;
@@ -147,6 +146,7 @@ public class MyFrame extends JFrame {
             }
 
         });
+
         quit = new JButton("Quit Program");
         quit.addActionListener(new ActionListener() {
 
@@ -156,6 +156,21 @@ public class MyFrame extends JFrame {
             }
 
         });
+
+        viewResults = new JButton("View Results");
+        viewResults.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(analyzer == null) {
+                    JOptionPane.showMessageDialog(null, "To view results, first run some checks.");
+                } else {
+                    ArrayList<String> analysisResults = analyzer.getCurrentlyStoredResults();
+                    ResultDisplayBox newDisplayBox = new ResultDisplayBox(analysisResults);
+                    newDisplayBox.display();
+                }
+            }
+        });
+
         styleChecksBox = new JCheckBox("Enable/Disable Style Checks");
         styleChecksBox.setPreferredSize(stylishBoxDimensions);
         styleChecksBox.addActionListener(new ActionListener() {
@@ -212,6 +227,7 @@ public class MyFrame extends JFrame {
 
         north.add(darkMode);
         south.add(run);
+        south.add(viewResults);
         south.add(quit);
         center.add(styleChecksBox);
         center.add(principleChecksBox);
@@ -223,15 +239,14 @@ public class MyFrame extends JFrame {
         analyzer = new Analyzer(new ClassFileReader(), validPath);
         setupAnalyzerWithCorrectChecks(analyzer);
         if(analyzer.getNumberOfChecks() == 0) {
-            JOptionPane.showMessageDialog(null, "No checks selected. Please select some checks to run.");
+            JOptionPane.showMessageDialog(null, "No checks selected. Please select some checks to run.", "No checks selected.", JOptionPane.ERROR_MESSAGE);
             System.out.println("No checks ran\n");
         }
         else {
             analyzer.analyzeGUI();
-            JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
+            JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt\n" + 
+            "or through pressing the View Results button.");
             System.out.println("SUCCESS!\n");
-            ArrayList<String> analysisResults = analyzer.getCurrentlyStoredResults();
-            ResultDisplayBox newDisplayBox = new ResultDisplayBox(analysisResults);
         }
         
     }
@@ -289,7 +304,7 @@ public class MyFrame extends JFrame {
         if (Files.isDirectory(projectPath)) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "File Path does not point to a directory.");
+            JOptionPane.showMessageDialog(null, "File Path does not point to a directory.", "No directory selected.", JOptionPane.ERROR_MESSAGE);
         }
         return false;
     }

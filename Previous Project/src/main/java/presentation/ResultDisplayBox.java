@@ -14,7 +14,7 @@ public class ResultDisplayBox {
 
     public ResultDisplayBox(List<String> analysisResults) {
         // frame settings
-        frame.setSize(500,500);
+        frame.setSize(800,800);
         frame.setResizable(true);
         
         // text settings
@@ -22,7 +22,7 @@ public class ResultDisplayBox {
         for (String string : analysisResults) {
             textArea.append(string);
         }
-        textArea.setSize(400,400);    
+        textArea.setSize(800,800);    
         
         textArea.setLineWrap(true);
         textArea.setEditable(false);
@@ -32,8 +32,10 @@ public class ResultDisplayBox {
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         frame.add(scroll);
-        frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    public void display() {
         frame.setVisible(true);
     }
 }
