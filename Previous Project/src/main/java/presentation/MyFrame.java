@@ -44,7 +44,7 @@ public class MyFrame extends JFrame {
 
     public static final int STYLISH_WIDTH = 225;
     public static final int STYLISH_HEIGHT = 25;
-    Dimension stylishBoxDimensions = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
+    private Dimension stylishBoxDimensions = new Dimension(STYLISH_WIDTH, STYLISH_HEIGHT);
     private JFrame myFrame;
     private JLabel title, desc1, desc2;
     private JPanel north, east, south, west, center;

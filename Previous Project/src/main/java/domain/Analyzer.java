@@ -9,7 +9,7 @@ import domain.checks.design_pattern_checks.ObserverPattern;
 import domain.checks.design_pattern_checks.StrategyPattern;
 import domain.checks.design_principle_checks.CheckDuplicateCode;
 import domain.checks.design_principle_checks.InformationHiding;
-import domain.checks.design_principle_checks.ProgramToInterface;
+// import domain.checks.design_principle_checks.ProgramToInterface;
 import domain.checks.design_principle_checks.SingleResponsibilityPrinciple;
 import domain.checks.style_checks.CheckClassName;
 import domain.checks.style_checks.MethodStyleCheck;
@@ -28,6 +28,7 @@ public class Analyzer {
     private IClassFileReader classFileReader;
     private ArrayList<Check> checks;
     private ArrayList<Check> selectedChecks;
+    private ArrayList<String> analysisResults;
     private Path projectDirectory;
     private Scanner scanner;
 
@@ -129,7 +130,7 @@ public class Analyzer {
         //         // analysisResults.add(check.performCheck(node));
         //     }
         // }
-        ArrayList<String> analysisResults = runChecks();
+        analysisResults = runChecks();
     
         ReportGenerator reportGenerator = new ReportGenerator();
         Path reportPath = this.projectDirectory.resolve("linter-report.txt");
@@ -140,7 +141,7 @@ public class Analyzer {
 
     public void analyzeGUI(){
         // selectedChecks.addAll(this.checks);
-        ArrayList<String> analysisResults = runChecks();
+        analysisResults = runChecks();
     
         ReportGenerator reportGenerator = new ReportGenerator();
         Path reportPath = this.projectDirectory.resolve("linter-report.txt");
@@ -151,13 +152,17 @@ public class Analyzer {
 
     public ArrayList<String> runChecks() {
         // Run selected checks on all classes
-        ArrayList<String> analysisResults = new ArrayList<>();
+        analysisResults = new ArrayList<>();
         for (MyClassNode node : this.nodes) {
             analysisResults.add("--------Performing Checks for " + node.name() + "--------\n");
             for (Check check : selectedChecks) {
                 analysisResults.add(check.performCheck(node));
             }
         }
+        return analysisResults;
+    }
+
+    public ArrayList<String> getCurrentlyStoredResults() {
         return analysisResults;
     }
 

@@ -9,7 +9,7 @@ import javax.swing.JScrollPane;
 
 public class ResultDisplayBox {
 
-    JFrame frame = new JFrame ("Linter Results");
+    private JFrame frame = new JFrame ("Linter Results");
 
 
     public ResultDisplayBox(List<String> analysisResults) {
@@ -37,5 +37,9 @@ public class ResultDisplayBox {
 
     public void display() {
         frame.setVisible(true);
+    }
+
+    public void hide() {
+        frame.setVisible(false);
     }
 }

@@ -2,8 +2,54 @@
 
 
 package presentation{
-+class main{
++class Main{
     +{static} main(args: String[]): void
+}
+
++class MyFrame{
+    +{static} final FRAME_WIDTH: int
+    +{static} final FRAME_HEIGHT: int
+
+    +{static} final STYLISH_WIDTH: int
+    +{static} final STYLISH_HEIGHT: int
+    -stylishBoxDimensions: Dimension
+    -MyFrame: JFrame
+    -title, desc1, desc2: JLabel
+    -north, east, south, west, center: JPanel
+    -run, viewResults, quit, explorerButton: JButton
+    -patternChecksBox, principleChecksBox, styleChecksBox, darkMode: JCheckBox
+    -patternOptions, principleOptions, styleOptions: JComboBox<String>
+    -fc: JFileChooser
+    -tf: JTextField
+    -result: int
+    -path, tfPathString: String
+    -manualPath1, manualPath2: Path
+    -analyzer: Analyzer
+
+    +MyFrame()
+    -buildComponents(): void
+    -buildPanels(): void
+    -buildLabels(): void
+    -buildButtons(): void
+    -runLinter(validPath: Path): void
+    -buildInteractive(): void
+    -checkDirectory(Path projectPath): boolean
+    +displayFrame(): void
+    +hideFrame(): void
+    +setupAnalyzerWithCorrectChecks(analyzer: Analyzer): void
+    +toggleStyleComboBox(): void
+    +togglePrincipleComboBox(): void
+    +togglePatternComboBox(): void
+    +setStyleComboBoxOption(newIndex: int): void
+    +setPrincipleComboBoxOption(newIndex: int): void
+    +setPatternComboBoxOption(newIndex: int): void
+}
+
++class ResultDisplayBox{
+    -frame: JFrame
+    +ResultDisplayBox(analysisResults: List<String>)
+    +display(): void
+    +hide(): void
 }
 
 }
@@ -166,15 +212,25 @@ package domain {
 +class Analyzer{
     -classFileReader: IClassFileReader
     -checks: ArrayList<Check>
+    -selectedChecks: ArrayList<Check>
+    -analysisResults: ArrayList<String>
     -projectDirectory: Path
     -scanner: Scanner
     -nodes: ArrayList<ClassNode>
     +Analyzer(classFileReader: IClassFileReader, projectDirectory: Path, scanner: Scanner)
+    +Analyzer(classFileReader: IClassFileReader, projectDirectory: Path)
     -populateCheckObjects(): void
     +readFiles(projectDirectory: Path): void
     -addToList(classFilePath: Path): void
     +analyze(): void
-
+    +analyzeGUI(): void
+    +runChecks(): ArrayList<String>
+    +getCurrentlyStoredResults(): ArrayList<String>
+    +addCheck(check: Check): void
+    +addAllChecks(checks: List<Check>): void
+    +getNodesNum(): int
+    +getNumberOfChecks(): void
+    +getSelectedChecks(): ArrayList<Check> 
 }
 
 +class ReportGenerator{
@@ -297,7 +353,23 @@ package datasource{
 
 }
 
-main -d-> Analyzer
+Main -d-> MyFrame
+
+MyFrame ..> ClassFileReader
+MyFrame -->"1" Analyzer
+MyFrame ..>"*" Check
+MyFrame ..> DecoratorPattern
+MyFrame ..> FacadePattern
+MyFrame ..> ObserverPattern
+MyFrame ..> StrategyPattern
+MyFrame ..> CheckDuplicateCode
+MyFrame ..> InformationHiding
+MyFrame ..> SingleResponsibilityPrinciple
+MyFrame ..> CheckClassName
+MyFrame ..> MethodStyleCheck
+MyFrame ..> UnusedVariableChecker
+MyFrame ..> VariableNamingConventions
+MyFrame ..> ResultDisplayBox
 
 Analyzer ..> IClassFileReader
 Analyzer ..> MyClassNode

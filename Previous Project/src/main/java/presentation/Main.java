@@ -1,11 +1,11 @@
 package presentation;
 
-import domain.Analyzer;
-import datasource.ClassFileReader;
+// import domain.Analyzer;
+// import datasource.ClassFileReader;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
+// import java.nio.file.Path;
+// import java.nio.file.Paths;
+// import java.util.Scanner;
 
 public class Main {
 
@@ -15,23 +15,26 @@ public class Main {
         // initialize();
     }
 
-    private static void initialize(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the project directory path: ");
+    // Deprecated methods from when user input was handled through the console.
+    // Can be unburied if need be to recreation console UI.
 
-        String directoryPath = scanner.nextLine();
+    // private static void initialize(){
+    //     Scanner scanner = new Scanner(System.in);
+    //     System.out.println("Enter the project directory path: ");
 
-        Path projectDirectory = Paths.get(directoryPath);
-        Analyzer analyzer = new Analyzer(new ClassFileReader(), projectDirectory, scanner); 
-        analyzer.analyze();
-        System.out.println("Results can be found in linter-report.txt");
+    //     String directoryPath = scanner.nextLine();
 
-        scanner.close(); 
-    }
+    //     Path projectDirectory = Paths.get(directoryPath);
+    //     Analyzer analyzer = new Analyzer(new ClassFileReader(), projectDirectory, scanner); 
+    //     analyzer.analyze();
+    //     System.out.println("Results can be found in linter-report.txt");
 
-    public static void startLinter(Path projectDirectory){
-        // Analyzer analyzer = new Analyzer(new ClassFileReader(), projectDirectory);
-        // analyzer.analyzeGUI();
-    }
+    //     scanner.close(); 
+    // }
+
+    // public static void startLinter(Path projectDirectory){
+    //     // Analyzer analyzer = new Analyzer(new ClassFileReader(), projectDirectory);
+    //     // analyzer.analyzeGUI();
+    // }
 }
 
