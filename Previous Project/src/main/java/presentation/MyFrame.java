@@ -230,6 +230,8 @@ public class MyFrame extends JFrame {
             analyzer.analyzeGUI();
             JOptionPane.showMessageDialog(null, "The linter has finished running. Results can be found in " + path + "\\" + "linter-report.txt");
             System.out.println("SUCCESS!\n");
+            ArrayList<String> analysisResults = analyzer.getCurrentlyStoredResults();
+            ResultDisplayBox newDisplayBox = new ResultDisplayBox(analysisResults);
         }
         
     }
@@ -249,6 +251,7 @@ public class MyFrame extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     path = fc.getSelectedFile().getAbsolutePath();
                     manualPath1 = Paths.get(path);
+                    tf.setText(path);
                     System.out.println(tfPathString);
                 } else if(result == JFileChooser.CANCEL_OPTION) {
                     return;  
