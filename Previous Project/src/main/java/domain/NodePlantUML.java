@@ -1,8 +1,6 @@
 package domain;
 
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.objectweb.asm.Opcodes;
@@ -23,7 +21,7 @@ public class NodePlantUML {
         this.methods = this.node.methods();
         this.codeUML = new StringBuilder();
         this.connectionsUML = new StringBuilder();
-        this.className = this.node.name();
+        this.className = getName(this.node);
     }
 
     public void generate() {
@@ -42,19 +40,21 @@ public class NodePlantUML {
         int access = this.node.access();
         switch (access) {
             case Opcodes.ACC_PUBLIC:
-                this.codeUML.append("class ");
+                this.codeUML.append("+class ");
                 break;
             case Opcodes.ACC_ABSTRACT:
-                this.codeUML.append('"' + "abstract class" + '"' + " ");
+                this.codeUML.append("+abstract class ");
                 break;
             case Opcodes.ACC_ENUM:
                 this.codeUML.append("enum ");
                 break;
+            case Opcodes.ACC_INTERFACE:
+                this.codeUML.append("+interface ");
             case Opcodes.ACC_PRIVATE:
-                this.codeUML.append("class -");
+                this.codeUML.append("+class - ");
                 break;
             case Opcodes.ACC_PROTECTED:
-                this.codeUML.append("class #");
+                this.codeUML.append("+class # ");
                 break;
             default:
                 this.codeUML.append("ERROR READING CLASS ACCESS MODIFIER");
@@ -79,7 +79,8 @@ public class NodePlantUML {
         for (int i = 0; i < this.fields.size(); i++) {
             MyFieldNode current = this.fields.get(i);
             handleFieldAccessModifiers(current);
-            this.codeUML.append(getName(current)); // this needs parsed
+            this.codeUML.append(getName(current)); // name needs to be parsed
+            this.codeUML.append(": ");
             handleFieldConnections(current);
         }
     }
@@ -103,7 +104,16 @@ public class NodePlantUML {
 
     private void handleFieldConnections(MyFieldNode field) {
         if (field.signature() == null) {
-            StringBuilder type = new StringBuilder(field.desc());
+            this.codeUML.append(getDesc(field));
+        } else { // has a different type of field (List, HashMap, etc.)
+            StringBuilder simpSig = simplifySignature(field.signature()); // includes '<' at beginning
+            String desc = getDesc(field);
+            parseSignature(simpSig, desc);
+        }
+    }
+
+    private String getDesc(MyFieldNode field){
+        StringBuilder type = new StringBuilder(field.desc());
             String reversed = type.reverse().toString();
             StringBuilder name = new StringBuilder();
             int length = type.length();
@@ -116,16 +126,58 @@ public class NodePlantUML {
                 }
             }
             name = name.reverse();
-            this.codeUML.append(name);
-        } else { // has a different type of field (List, HashMap, etc.)
+            return name.toString();
+    }
+
+    private String getDesc(MyMethodNode method){
+        StringBuilder type = new StringBuilder(method.desc());
+            String reversed = type.reverse().toString();
+            StringBuilder name = new StringBuilder();
+            int length = type.length();
+            for (int i = 0; i < length; i++) {
+                char c = reversed.charAt(i);
+                if (c == '/') {
+                    break;
+                } else {
+                    name.append(c);
+                }
+            }
+            name = name.reverse();
+            return name.toString();
+    }
+
+    private void parseSignature(StringBuilder sig, String desc){
+        List<String> typesToParseList = new ArrayList<>();
+        int length = sig.length();
+        StringBuilder type = new StringBuilder();
+
+        for(int i = 1; i < length; i++){
+            char c = sig.charAt(i);
+            if(c == '<') break;
+            else if (c == ';'){
+                typesToParseList.add(type.toString());
+                type.setLength(0);
+                continue;
+            }
+            else type.append(c);
 
         }
+        this.codeUML.append(desc + "<");
+        for(int i = 0; i < typesToParseList.size(); i++){
+            this.codeUML.append(typesToParseList.get(i));
+            if(i == typesToParseList.size() - 1){
+                break;
+            } else this.codeUML.append(", ");
+        }
+        this.codeUML.append("> \n");
     }
+
 
     private void handleMethods() {
         for (int i = 0; i < this.methods.size(); i++) {
             MyMethodNode current = this.methods.get(i);
             handleMethodAccessModifiers(current);
+            this.codeUML.append(getName(current)); // name needs to be parsed
         }
     }
 
@@ -167,6 +219,22 @@ public class NodePlantUML {
         }
     }
 
+    private StringBuilder simplifySignature(String sig){
+        StringBuilder full = new StringBuilder(sig);
+        String reversed = full.reverse().toString();
+        StringBuilder newSig = new StringBuilder();
+        int length = full.length();
+        for(int i = 0; i < length; i++){
+            char c = reversed.charAt(i);
+            newSig.append(c);
+            if (c == '<'){
+                break;
+            } 
+        }
+        newSig = newSig.reverse();
+        return newSig;
+    }
+
     private void handleConnections() {
         // interfaces
         for (int i = 0; i < this.node.interfaces().size(); i++) {
@@ -183,6 +251,38 @@ public class NodePlantUML {
 
     private String getName(MyFieldNode f){
         StringBuilder fullNameRev = new StringBuilder(f.name());
+        fullNameRev = fullNameRev.reverse();
+        int length = fullNameRev.length();
+        StringBuilder name = new StringBuilder();
+        for(int i = 0; i < length; i++){
+            char c = fullNameRev.charAt(i);
+                if (c == '/') {
+                    break;
+                } else {
+                    name.append(c);
+                }
+        }
+        return name.reverse().toString();
+    }
+
+    private String getName(MyMethodNode m){
+        StringBuilder fullNameRev = new StringBuilder(m.name());
+        fullNameRev = fullNameRev.reverse();
+        int length = fullNameRev.length();
+        StringBuilder name = new StringBuilder();
+        for(int i = 0; i < length; i++){
+            char c = fullNameRev.charAt(i);
+                if (c == '/') {
+                    break;
+                } else {
+                    name.append(c);
+                }
+        }
+        return name.reverse().toString();
+    }
+
+    private String getName(MyClassNode classNode){
+        StringBuilder fullNameRev = new StringBuilder(classNode.name());
         fullNameRev = fullNameRev.reverse();
         int length = fullNameRev.length();
         StringBuilder name = new StringBuilder();

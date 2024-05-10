@@ -199,6 +199,7 @@ public class MyFrame extends JFrame {
         });
 
         darkMode = new JCheckBox("Enable/Disable Dark Mode");
+        
         darkMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
